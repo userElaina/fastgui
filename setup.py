@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='fastgui',
-    version='1.0.0',
+    version='1.0.1',
     description='Gui tool to test py programs.',
     py_modules=['fastgui'],
 	packages=setuptools.find_packages(),
@@ -14,9 +14,10 @@ setuptools.setup(
     classifiers=[
         'Programming Language :: Python :: 3',
     ],
-    keywords='gui elaina fast',
+    keywords='fast gui elaina',
     install_requires=[
 		'tk',
+		'downs'
 	],
     package_data={
         'fastgui': ['1.ico'],

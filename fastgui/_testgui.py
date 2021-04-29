@@ -1,8 +1,7 @@
+import os
 import json
-# from json import loads,dumps
 from copy import deepcopy as dcp
 import tkinter as tk
-import os
 
 _nick='/nick'
 _mian='/mian'
@@ -115,14 +114,12 @@ for i in range(MXN):
 
 def f_run():
 	global exec_allow
-	# print('Run')
 	f_up()
 	exec_allow=True
 	t.destroy()
 
 def f_up():
 	global ans
-	# print('Update')
 	rn=0
 	for i in args:
 		for j in i:
@@ -135,9 +132,9 @@ def f_up():
 	ans=upans(_js)
 	a3.delete('0.0',tk.END)
 	a3.insert(tk.END,'\n'.join(ans))
-	# print(ans)
 
 PTH=os.path.abspath(os.path.dirname(__file__))+'/1.ico'
+
 def testgui(
 	js:dict=None,
 	pth:str=None,
@@ -201,7 +198,7 @@ def testgui(
 	try:
 		t.iconbitmap(ico)
 	except:
-		print('(without ico)')
+		None
 
 	dpix-=dx+px+dx
 	dpiy-=s_dw
