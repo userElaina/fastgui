@@ -24,34 +24,30 @@ _f=None
 
 t=None
 bts=None
-ssa=None
+ex_a=None
 
 bg=None
 text=None
 ss=None
+_button_or_text=None
 
 DESTROY='/exit'
 JUMP='/continue'
-
-def f_press(i:int):
-	a=_f(i)
-	if a==DESTROY:
-		t.destroy()
-	elif a!=JUMP:
-		f_up()
-
-MXN=10000
-for i in range(MXN):
-	od='def ff_'+str(i)+'():f_press('+str(i)+')'
-	exec(od)
+MXN=125
+# KEYS='qwertyuiop asdfghjkl;zxcvbnm'
+KEYS='`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./ '
+# KEYS+='~!@#$%^&*()_+QWERTYUIOP\{\}|ASDFGHJKL:"ZXCVBNM<>?'
 
 def f_up():
 	global ss
 
 	if _js['s']!=ss:
 		ss=_js['s']
-		ssa.delete('0.0',tk.END)
-		ssa.insert(tk.END,ss)
+		if _button_or_text:
+			ex_a['text']=ss
+		else:
+			ex_a.delete('0.0',tk.END)
+			ex_a.insert(tk.END,ss)
 
 	for i in range(len(bts)):
 		s='text'
@@ -64,6 +60,22 @@ def f_up():
 			bts[i][s]=_js[s][i]
 			text[i]=_js[s][i]
 
+def f_press(i:int):
+	a=_f(i)
+	if a==DESTROY:
+		t.destroy()
+	elif a!=JUMP:
+		f_up()
+
+for i in range(MXN):
+	od='def ff_'+str(i)+'():f_press('+str(i)+')'
+	exec(od)
+
+def f_key(event):
+	c=str(event.char)
+	if c not in KEYS:
+		return
+	f_press(c)
 
 def _up(d:float):
 	while True:
@@ -77,15 +89,17 @@ def mtgui(
 	f,
 	ico:str=PTH,
 	hz:int=10,
+	button_or_text:bool=True,
 )->None:
 
-	global _js,_f,t,bts,bg,text,ss,ssa
+	global _js,_f,t,bts,bg,text,ss,ex_a,_button_or_text
 
 	_js=js
 	_f=f
 	bg=dcp(js['bg'])
 	text=[str(i) for i in js['text']]
-	ss=js['s']
+	_button_or_text=button_or_text
+	# ss=js['s']
 
 	nx,ny=_js['tk']['n']
 	px,py=_js['tk']['buttom']
@@ -125,6 +139,11 @@ def mtgui(
 	except:
 		None
 	
+	listen_k=tk.Label(t)
+	listen_k.focus_set()
+	listen_k.pack()
+	listen_k.bind("<Key>",f_key)
+
 	bts=list()
 	fas=list()
 
@@ -132,7 +151,7 @@ def mtgui(
 		t,
 		width=mx,
 		height=my,
-		bg='#ff0000',
+		bg=_js['bg_delta'],
 	)
 	cm.place(x=cx,y=cy)
 
@@ -145,7 +164,6 @@ def mtgui(
 				cm,
 				width=px,
 				height=py,
-				bg='#ff00ff',
 			)
 			fas.append(fa)
 			fa.propagate(False)
@@ -163,24 +181,46 @@ def mtgui(
 			bts.append(a)
 			a.pack(expand=True,fill=tk.BOTH)
 
-	fa=tk.Frame(
+	ex_fa=tk.Frame(
 		t,
 		width=mtx,
 		height=mty,
-		bg='#ffff00',
+		bg=_js['bg_exd'],
 	)
-	fa.propagate(False)
-	fa.place(x=tx,y=ty)
+	ex_fa.propagate(False)
+	ex_fa.place(x=tx,y=ty)
 
-	ssa=tk.Text(
-		fa,
-		bg='#ffffff',
-		bd=1,
-		font=('黑体',12,),
-	)
-	ssa.insert(tk.INSERT,ss)
-	ssa.pack(expand=True,fill=tk.BOTH)
-	
+	if 'ex_d' in js['tk']:
+		ex_ffa=ex_fa
+		ex_fa=tk.Frame(
+			ex_ffa,
+			width=js['tk']['ex_p'][0],
+			height=js['tk']['ex_p'][1],
+		)
+		ex_fa.propagate(False)
+		ex_fa.place(x=js['tk']['ex_d'][0],y=js['tk']['ex_d'][1])
+
+	if button_or_text:
+		ex_a=tk.Button(
+			ex_fa,
+			bg=_js['bg_exp'],
+			activebackground=_js['bg_exp'],
+			bd=0,
+			font=('黑体',12,),
+			wraplength=js['tk']['ex_p'][0],
+			relief=tk.FLAT
+		)
+		# ex_a['state']=tk.DISABLED
+	else:
+		ex_a=tk.Text(
+			ex_fa,
+			bg=_js['bg_exp'],
+			bd=1,
+			font=('黑体',12,),
+		)
+		ex_a.insert(tk.INSERT,ss)
+	ex_a.pack(expand=True,fill=tk.BOTH)
+	# wraplength=30
 	if hz:
 		downs.throws(_up,1/hz)
 	t.mainloop()
