@@ -5,4 +5,4 @@
 '''
 
 from fastgui._testgui import testgui
-from fastgui._matrixgui import mtgui,DESTROY,JUMP
+from fastgui._matrixgui import mtgui,DESTROY,JUMP,MXN,KEYS
